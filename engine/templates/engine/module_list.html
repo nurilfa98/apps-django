@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Module Management</title>
+    <style>
+      table {
+        width: 50%;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        padding: 8px;
+        text-align: left;
+      }
+      .message {
+        margin-bottom: 15px;
+      }
+      .font-bold {
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Module Management</h1>
+    <p>You need to install the module to access this feature.</p>
+    {% if messages %} {% for message in messages %}
+    <div class="message" id="msg-{{ forloop.counter }}">
+      <span class="font-bold">Info!</span> {{ message }}
+      <button type="button" onclick="handleClose('msg-{{ forloop.counter }}')">
+        Close
+      </button>
+    </div>
+    {% endfor %} {% endif %}
+
+    <table border="1">
+      <tr>
+        <th>Name</th>
+        <th>Status</th>
+        <th>Version</th>
+        <th>Actions</th>
+      </tr>
+      {% for module in objModule %}
+      <tr>
+        <td>{{ module.name }}</td>
+        <td>
+          {% if module.is_installed %} Installed {% else %} Not Installed
+          {%endif %}
+        </td>
+        <td>{{ module.version }}</td>
+        <td>
+          <a href="" onclick="install(event, '{{ module.slug }}')">Installed</a>
+          |
+          <a href="{% url 'upgrade_module' module.slug %}">Upgrade</a>
+          |
+          <a href="" onclick="uninstall(event, '{{ module.slug }}')"
+            >Uninstall</a
+          >
+          |
+          <a href="{% url 'module_router' module.slug %}"
+            >Goto {{ module.name }}</a
+          >
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+
+    <script>
+      const url = "http://127.0.0.1:8000";
+
+      function getCSRFToken() {
+        return (
+          document.cookie
+            .split("; ")
+            .find((row) => row.startsWith("csrftoken="))
+            ?.split("=")[1] || ""
+        );
+      }
+
+      async function install(event, param) {
+        event.preventDefault();
+
+        const response = await fetch(`${url}/module/apps/install/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            // "X-CSRFToken": getCSRFToken(),
+          },
+          body: JSON.stringify({
+            slug: param,
+          }),
+        });
+        const json = await response.json();
+        // console.log("response :: ", json);
+        window.location.href = window.location.href;
+      }
+
+      async function uninstall(event, param) {
+        event.preventDefault();
+
+        const response = await fetch(`${url}/module/apps/uninstall/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            // "X-CSRFToken": getCSRFToken(),
+          },
+          body: JSON.stringify({
+            slug: param,
+          }),
+        });
+        const json = await response.json();
+
+        window.location.href = window.location.href;
+      }
+
+      let messageState = {}; // Simpan state pesan dalam objek
+
+      function handleClose(id) {
+        let msgElement = document.getElementById(id);
+        if (msgElement) {
+          if (messageState[id]) {
+            msgElement.style.display = "block"; // Tampilkan kembali jika disembunyikan
+          } else {
+            msgElement.style.display = "none"; // Sembunyikan jika terlihat
+          }
+          messageState[id] = !messageState[id]; // Toggle state
+        }
+      }
+    </script>
+  </body>
+</html>

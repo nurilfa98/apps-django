@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Form Login</title>
+    <style>
+      .mt {
+        margin-top: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Form Login</h1>
+    <form action="" method="post">
+      <label for="role">Pilih Role:</label>
+      <select name="role" id="role">
+        <option value="manager">Manager</option>
+        <option value="user">User</option>
+      </select>
+
+      <button type="submit">Login</button>
+    </form>
+
+    <div class="mt">
+      <a href="{% url 'product_list' %}">Back </a>
+    </div>
+  </body>
+</html>

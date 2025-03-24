@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Create Product</title>
+  </head>
+
+  <body>
+    <h1>Create Product</h1>
+    <form method="post">
+      {{ form.as_p }}
+      <!-- Tampilkan form sebagai paragraph -->
+      <button type="submit">Submit</button>
+    </form>
+    <!-- Penggunaan ini agar url dinamis berdasarkan url name pada urls.py -->
+    <div style="margin-top: 15px">
+      <a href="{% url 'product_list' %}">Back to Product List</a>
+    </div>
+  </body>
+</html>
